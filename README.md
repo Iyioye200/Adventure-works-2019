@@ -1,2 +1,2 @@
 # Adventure works 2019
- AHG 
+ AHG project on company sales for categories of products
