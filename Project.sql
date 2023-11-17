@@ -1,29 +1,5 @@
 
 --- EXPLORING
- 
-
-SELECT SalesOrderID, OnlineOrderFlag from Sales.SalesOrderHeader;
-select A.Name as ProductName, A.ProductID,A.ProductNumber, B.UnitPrice,B.SalesOrderID from Production.Product as A
-join Sales.SalesOrderDetail B
-on A.ProductID = B.ProductID
-
--- Distinct products
-
-select distinct a.productID, a.Name as ProductName from Production.Product as a
-join Production.ProductSubcategory b
-on a.ProductSubcategoryID  = b.ProductSubcategoryID
---
-select SalesOrderID, 
- case when OnlineOrderFlag = 1 then 'Online Sales' else 'Reseller Sales' end as OnlineOrderFlag
- from  Sales.SalesOrderHeader
-
- SELECT ((OrderQty * UnitPrice) * (1.0 - UnitPriceDiscount)) revenue ,  
-p.Name AS ProductName 
-FROM Production.Product AS p 
-INNER JOIN Sales.SalesOrderDetail AS sod
-ON p.ProductID = sod.ProductID 
-ORDER BY ProductName ASC;
-
 -- PRODUCT TABLE
 
 select B.ProductID,
@@ -43,31 +19,6 @@ on A.ProductCategoryID = C.ProductCategoryID
 inner JOIN Sales.SalesOrderDetail SSOD
 ON B.ProductID = SSOD.ProductID
 order by ProductID ASC;
-
--- SALES TABLE
-select 
-Q.CustomerID,
-Q.SalesOrderID,
-Q.SalesOrderNumber,
-Q.OrderDate,
-Q.ShipDate,
-Q.Freight,
-Q.TerritoryID,
-P.OrderQty,
-P.ProductID,
-P.LineTotal as Revenue,
-P.UnitPrice,
-P.UnitPriceDiscount,
-T.Name as SalesReasonName ,
-case when Q.[OnlineOrderFlag] = 1 then 'Online' else 'Reseller' end as [SalesChannel]
-from Sales.SalesOrderHeader as Q
-inner join Sales.SalesOrderDetail P
-on Q.SalesOrderID = P.SalesOrderID
-left join Sales.SalesOrderHeaderSalesReason R
-on Q.SalesOrderID = R.SalesOrderID
-left join Sales.SalesReason T
-on R.SalesReasonID = T.SalesReasonID
-Order by ProductID Asc
 
 -- KEY MEASURES TABLE
 select SSOD.SalesOrderID,
@@ -92,7 +43,6 @@ case when HomeOwnerFlag  = 1 then 'Homeowner' else 'Tenant'end as HomeOwnerFlag,
 NumberCarsOwned
 from Sales.vPersonDemographics d
 where Education is not null
-select * from Person.Person
 
 SELECT 
 distinct CustomerID,
@@ -118,10 +68,6 @@ left join Production.WorkOrder e
 on d.ScrapReasonID = e.ScrapReasonID
 order by ScrapReasonID asc
 
-select * from Production.WorkOrderRouting
-
-
-
 -- Data for Forecasting
 select 
 Q.CustomerID,
@@ -146,7 +92,7 @@ left JOIN Production.ProductSubcategory as C
 on B.ProductSubcategoryID = C.ProductSubcategoryID
 order by OrderDate ASC; 
 
----- MBA
+---- Market Basket Analysis
 SELECT TOP 10 
 	SalesOrderID,
 	ProductID
@@ -185,7 +131,7 @@ JOIN Sales.SalesOrderDetail AS FIS ON Orderlist.SalesOrderID = FIS.SalesOrderID;
 	JOIN Sales.SalesOrderDetail AS FIS 
 		ON Orderlist.SalesOrderID = FIS.SalesOrderID);
 
-
+-- MBA
 
 SELECT Top 20 p1, p2, COUNT(*) as numorders
 FROM (SELECT op1.SalesOrderID, op1.ProductID as p1, op2.ProductID as p2
@@ -222,7 +168,7 @@ left join [Production].[Product] as PP
 on SSOD.ProductID = PP.ProductID
 
 
---sales table
+--Sales Table
 
 with CTESemicolonPrefix as (
 Select 
@@ -248,10 +194,6 @@ from [Production].[ProductCostHistory])
 from [Sales].[SalesOrderDetail] sd
 inner join Sales.SalesOrderHeader sh
 on sd.SalesOrderID = sh.SalesOrderID
---left join Sales.SalesOrderHeaderSalesReason R
---on sh.SalesOrderID = R.SalesOrderID
---left join Sales.SalesReason T
---on R.SalesReasonID = T.SalesReasonID
 
 --- SCRAP TABLE
 select d.ScrapReasonID,
@@ -266,7 +208,7 @@ on d.ScrapReasonID = e.ScrapReasonID
 order by ScrapReasonID asc
 
 
-
+--- Customer Demography Online
 SELECT 
 A.SalesOrderID,B.CustomerKey,
 A.OnlineOrderFlag
@@ -280,9 +222,9 @@ left JOIN [Sales].[SalesOrderHeader] AS A
 ON B.[CustomerKey] = A.CustomerID
 Where A.OnlineOrderFlag = 1 order by A.SalesOrderID asc
 
-select distinct CustomerID from Sales.SalesOrderHeader
+--select distinct CustomerID from Sales.SalesOrderHeader
 
-select distinct CustomerKey from [AdventureWorksDW2017].[dbo].[DimCustomer]
+--select distinct CustomerKey from [AdventureWorksDW2017].[dbo].[DimCustomer]
 
 --Purchasing Table
 select a.PurchaseOrderID,
